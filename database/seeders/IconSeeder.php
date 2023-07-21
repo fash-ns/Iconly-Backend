@@ -8,12 +8,18 @@ use Illuminate\Support\Facades\Storage;
 
 class IconSeeder extends Seeder
 {
+    private function getData(): array
+    {
+        $json_string = Storage::disk('local')->get('iconData.json');
+        return json_decode($json_string, true);
+
+    }
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $data = json_decode(Storage::disk('local')->get('iconData.json'), true);
-        Icon::insert($data);
+        Icon::insert($this->getData());
     }
 }
