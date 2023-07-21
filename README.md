@@ -27,6 +27,8 @@ php artisan db:seed IconSeeder
 php artisan storage:link
 ```
 
+Next please extract the provided `storage.zip` file to /storage/app directory.
+
 ## What I did
 This project has two simple controllers; One for Auth logic and second is for
 icons' fetch and download. I have also implemented a new model and migration for
@@ -42,10 +44,6 @@ such as JWT is better approach as every authentication process, needs a query to
 the database in stateful authentications. Since this project is for testing
 purposes, I decided to pick Laravel default authentication logic which is stateful.
 
-### Committed files from storage directory
-It's usually not a good practice to push storage files to the git repository.
-I did it for minimizing configuration for running the project.
-
 ### Hash named icons
 If you check the name of the icons, You see that they are all hashed. That's
 because If a malicious user finds the list of the icons' names and the icons' path,
@@ -57,4 +55,10 @@ Icons' original filename is stored in database. So when user downloads some icon
 he / she gets the ZIP file with original and human-readable file names.
 
 ### Stream download VS direct download
-Streaming large files needs lots of memories.
+Large file stream from disk storage is memory intensive. In this project, I have
+streamed the ZIP archive created from user selected icons to the output as the
+ZIP file size is at most 500KB. Using steam made me able to delete the ZIP file
+after returning it. But there is a better approach for large files. Large files
+should be stored in disk storage (In a temp dir like /tmp) and returned as RAW
+response with suitable headers in order browser to download it. It's also
+encouraged to have a job that deletes generated ZIP files from disk storage.
